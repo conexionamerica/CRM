@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>CRM Conexión América</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="top">
+    <h1>Conexión América <span>CRM de leads</span></h1>
+    <nav>
+      <button data-tab="fila" class="ativo">Fila</button>
+      <button data-tab="tarefas">Tarefas <b id="badge-tarefas" hidden></b></button>
+      <button data-tab="campanhas">Campanhas</button>
+    </nav>
+  </header>
+
+  <main>
+    <!-- US-01 e US-03: fila do atendente -->
+    <section id="fila" class="tab">
+      <form id="form-lead" class="card">
+        <h2>Novo contato do WhatsApp</h2>
+        <div class="grid">
+          <label>Telefone <input name="phone" required placeholder="(11) 99999-8888"></label>
+          <label>Nome <input name="name" placeholder="Opcional"></label>
+          <label class="largo">Primeira mensagem <input name="message" placeholder="Cole a mensagem. Ex.: Quero saber das aulas #IG-OUT26"></label>
+        </div>
+        <button type="submit">Registrar</button>
+        <p class="aviso" id="aviso-lead" role="status"></p>
+      </form>
+
+      <div class="filtros">
+        <input id="busca" type="search" placeholder="Buscar por nome ou telefone">
+        <select id="filtro-etapa">
+          <option value="">Todas as etapas</option>
+          <option value="lead">Lead</option>
+          <option value="oportunidade">Oportunidade</option>
+          <option value="aluno">Aluno</option>
+          <option value="base_fria">Lead frio (base)</option>
+        </select>
+        <a href="/api/export/leads.csv"><button type="button" class="sec">Baixar planilha para análise</button></a>
+      </div>
+      <div class="tabela-wrap">
+        <table>
+          <thead><tr><th>Contato</th><th>Etapa</th><th>Primeira resposta</th><th>Triagem</th><th>Campanha</th><th>Aula experimental</th></tr></thead>
+          <tbody id="lista-leads"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- US-02: retomar contato em até 12h após a falta -->
+    <section id="tarefas" class="tab" hidden>
+      <div id="lista-tarefas"></div>
+    </section>
+
+    <!-- US-00 e US-05: campanhas e resultado -->
+    <section id="campanhas" class="tab" hidden>
+      <form id="form-campanha" class="card">
+        <h2>Nova campanha</h2>
+        <div class="grid">
+          <label>Código <input name="code" required placeholder="IG-OUT26"></label>
+          <label>Nome <input name="name" required placeholder="Stories outubro"></label>
+          <label>ID do anúncio na Meta <input name="meta_ad_id" placeholder="Opcional, para a API do WhatsApp"></label>
+        </div>
+        <button type="submit">Criar</button>
+        <p class="aviso" id="aviso-campanha" role="status"></p>
+      </form>
+      <h2>Resultado por campanha</h2>
+      <div class="tabela-wrap">
+        <table>
+          <thead><tr><th>Campanha</th><th>Leads</th><th>Oportunidades</th><th>Alunos</th><th>Conversão</th><th>Base fria</th><th>Link do anúncio</th></tr></thead>
+          <tbody id="relatorio"></tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <!-- Ficha do lead -->
+  <dialog id="ficha"><div id="ficha-conteudo"></div></dialog>
+
+  <script src="app.js" type="module"></script>
+</body>
+</html>

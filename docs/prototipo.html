@@ -1,0 +1,640 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+<title>CRM Conexión América</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<style>
+:root {
+  --bg: #f6f8f9; --surface: #ffffff; --fg: #1b2a33; --muted: #5a6a74; --line: #dfe5e8;
+  --accent: #3d6f73; --accent-ink: #ffffff;
+  --quente: #c2410c; --medio: #a16207; --frio: #2563eb; --erro: #b91c1c; --ok: #2f6f4f;
+  --lead: #e3eefb; --oportunidade: #fbf0c9; --aluno: #e4f3dc; --base_fria: #eceff1;
+  color-scheme: light;
+}
+:root[data-theme="dark"] {
+    --bg: #12181c; --surface: #1a2227; --fg: #e6edf1; --muted: #a3b1ba; --line: #2c373e;
+    --accent: #4f8c90; --quente: #fb923c; --medio: #facc15; --frio: #60a5fa; --erro: #f87171; --ok: #7fd0a5;
+    --lead: #1d2a3a; --oportunidade: #362f17; --aluno: #1f3220; --base_fria: #262d31;
+    color-scheme: dark;
+  }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #12181c; --surface: #1a2227; --fg: #e6edf1; --muted: #a3b1ba; --line: #2c373e;
+    --accent: #4f8c90; --quente: #fb923c; --medio: #facc15; --frio: #60a5fa; --erro: #f87171; --ok: #7fd0a5;
+    --lead: #1d2a3a; --oportunidade: #362f17; --aluno: #1f3220; --base_fria: #262d31;
+    color-scheme: dark;
+  }
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--fg); font: 15px/1.45 system-ui, "Segoe UI", sans-serif; }
+.top { padding-left: max(16px, env(safe-area-inset-left, 0px)) !important; padding-right: max(16px, env(safe-area-inset-right, 0px)) !important; background: var(--surface); border-bottom: 1px solid var(--line); padding: 12px 16px; display: flex; flex-wrap: wrap; gap: 8px 24px; align-items: center; justify-content: space-between; }
+h1 { font-size: 1.15rem; margin: 0; }
+h1 span { font-weight: 400; color: var(--muted); }
+h2 { font-size: 1rem; margin: 0 0 12px; }
+nav { display: flex; gap: 4px; }
+nav button { background: none; color: var(--fg); border: 1px solid transparent; }
+nav button.ativo { border-color: var(--accent); color: var(--accent); }
+nav b { background: var(--erro); color: #fff; border-radius: 10px; padding: 0 7px; font-size: .75rem; }
+main { max-width: 1100px; margin: 0 auto; padding-block: 16px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 16px; margin-bottom: 16px; }
+.grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; margin-bottom: 12px; }
+.largo { grid-column: 1 / -1; }
+label { display: flex; flex-direction: column; gap: 4px; font-size: .85rem; color: var(--muted); }
+input, select, textarea { font: inherit; color: var(--fg); background: var(--bg); border: 1px solid var(--line); border-radius: 6px; padding: 7px 9px; min-width: 0; }
+button { font: inherit; cursor: pointer; background: var(--accent); color: var(--accent-ink); border: 0; border-radius: 6px; padding: 7px 14px; }
+button.sec { background: none; color: var(--accent); border: 1px solid var(--accent); }
+button.perigo { background: none; color: var(--erro); border: 1px solid var(--erro); }
+.aviso { margin: 8px 0 0; min-height: 1.2em; font-size: .9rem; }
+.aviso.erro { color: var(--erro); }
+.filtros { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 10px; }
+.filtros input { flex: 1 1 240px; }
+.tabela-wrap { overflow-x: auto; background: var(--surface); border: 1px solid var(--line); border-radius: 8px; }
+table { width: 100%; border-collapse: collapse; }
+th, td { text-align: left; padding: 9px 12px; border-bottom: 1px solid var(--line); white-space: nowrap; }
+th { font-size: .8rem; color: var(--muted); font-weight: 600; }
+tbody tr { cursor: pointer; }
+tbody tr:hover { background: var(--bg); }
+td small { display: block; color: var(--muted); }
+.etapa { padding: 2px 8px; border-radius: 4px; font-size: .8rem; color: var(--fg); }
+.etapa.lead { background: var(--lead); } .etapa.oportunidade { background: var(--oportunidade); }
+.etapa.aluno { background: var(--aluno); } .etapa.base_fria { background: var(--base_fria); }
+.temp { font-weight: 600; font-size: .85rem; }
+.temp.quente { color: var(--quente); } .temp.medio { color: var(--medio); } .temp.frio { color: var(--frio); }
+.tarefa { display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: center; justify-content: space-between; }
+.tarefa.atrasada { border-color: var(--erro); }
+.tarefa .acoes { display: flex; gap: 6px; flex-wrap: wrap; }
+.atraso { color: var(--erro); font-weight: 600; }
+dialog { width: min(640px, calc(100vw - 32px)); border: 1px solid var(--line); border-radius: 10px; background: var(--surface); color: var(--fg); padding: 20px; }
+dialog::backdrop { background: rgb(0 0 0 / .4); }
+.ficha-topo { display: flex; justify-content: space-between; gap: 12px; align-items: flex-start; }
+.bloco { border-top: 1px solid var(--line); padding-top: 12px; margin-top: 12px; }
+.linha { display: flex; flex-wrap: wrap; gap: 8px; align-items: end; }
+.hist { list-style: none; padding: 0; margin: 0; font-size: .9rem; }
+.hist li { padding: 4px 0; border-bottom: 1px dashed var(--line); }
+.vazio { color: var(--muted); padding: 16px; text-align: center; }
+code { font-size: .8rem; word-break: break-all; }
+
+:root { --demo: #fff4d6; --demo-ink: #6b4e00; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --demo: #3a3014; --demo-ink: #f3d98a; } }
+:root[data-theme="dark"] { --demo: #3a3014; --demo-ink: #f3d98a; }
+.demo { background: var(--demo); color: var(--demo-ink); font-size: .88rem; padding-block: 8px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+.demo b { font-weight: 700; }
+.demo code { white-space: nowrap; }
+#csv-wrap { overflow-x: auto; max-height: 60vh; }
+#csv-wrap table { font-size: .8rem; font-variant-numeric: tabular-nums; }
+#csv-wrap td, #csv-wrap th { padding: 5px 8px; }
+#toast { position: fixed; left: 50%; bottom: calc(16px + env(safe-area-inset-bottom, 0px)); transform: translateX(-50%); background: var(--fg); color: var(--bg); padding: 10px 16px; border-radius: 8px; max-width: calc(100vw - 32px); font-size: .9rem; z-index: 20; }
+button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+</style>
+<div class="demo"><b>Demonstração com dados de exemplo.</b> Tudo funciona como no sistema real, mas nada é salvo: ao recarregar, a página volta ao início. Experimente registrar um contato com <code>#IG-OUT26</code> na mensagem, abrir a ficha de um lead ou tratar uma tarefa.</div>
+<header class="top">
+    <h1>Conexión América <span>CRM de leads</span></h1>
+    <nav>
+      <button data-tab="fila" class="ativo">Fila</button>
+      <button data-tab="tarefas">Tarefas <b id="badge-tarefas" hidden></b></button>
+      <button data-tab="campanhas">Campanhas</button>
+    </nav>
+  </header>
+
+  <main>
+    <!-- US-01 e US-03: fila do atendente -->
+    <section id="fila" class="tab">
+      <form id="form-lead" class="card">
+        <h2>Novo contato do WhatsApp</h2>
+        <div class="grid">
+          <label>Telefone <input id="f-phone" name="phone" required placeholder="(11) 99999-8888"></label>
+          <label>Nome <input id="f-name" name="name" placeholder="Opcional"></label>
+          <label class="largo">Primeira mensagem <input id="f-msg" name="message" placeholder="Cole a mensagem. Ex.: Quero saber das aulas #IG-OUT26"></label>
+        </div>
+        <button type="submit">Registrar</button>
+        <p class="aviso" id="aviso-lead" role="status"></p>
+      </form>
+
+      <div class="filtros">
+        <input id="busca" type="search" placeholder="Buscar por nome ou telefone">
+        <select id="filtro-etapa">
+          <option value="">Todas as etapas</option>
+          <option value="lead">Lead</option>
+          <option value="oportunidade">Oportunidade</option>
+          <option value="aluno">Aluno</option>
+          <option value="base_fria">Lead frio (base)</option>
+        </select>
+        <button type="button" class="sec" id="demo-export">Ver planilha para análise</button>
+      </div>
+      <div class="tabela-wrap">
+        <table>
+          <thead><tr><th>Contato</th><th>Etapa</th><th>Primeira resposta</th><th>Triagem</th><th>Campanha</th><th>Aula experimental</th></tr></thead>
+          <tbody id="lista-leads"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- US-02: retomar contato em até 12h após a falta -->
+    <section id="tarefas" class="tab" hidden>
+      <div id="lista-tarefas"></div>
+    </section>
+
+    <!-- US-00 e US-05: campanhas e resultado -->
+    <section id="campanhas" class="tab" hidden>
+      <form id="form-campanha" class="card">
+        <h2>Nova campanha</h2>
+        <div class="grid">
+          <label>Código <input id="c-code" name="code" required placeholder="IG-OUT26"></label>
+          <label>Nome <input id="c-name" name="name" required placeholder="Stories outubro"></label>
+          <label>ID do anúncio na Meta <input id="c-ad" name="meta_ad_id" placeholder="Opcional, para a API do WhatsApp"></label>
+        </div>
+        <button type="submit">Criar</button>
+        <p class="aviso" id="aviso-campanha" role="status"></p>
+      </form>
+      <h2>Resultado por campanha</h2>
+      <div class="tabela-wrap">
+        <table>
+          <thead><tr><th>Campanha</th><th>Leads</th><th>Oportunidades</th><th>Alunos</th><th>Conversão</th><th>Base fria</th><th>Link do anúncio</th></tr></thead>
+          <tbody id="relatorio"></tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <!-- Ficha do lead -->
+  <dialog id="ficha"><div id="ficha-conteudo"></div></dialog>
+
+  <dialog id="csv"><div class="ficha-topo"><div><h2>Planilha para análise</h2><small>No sistema real, o botão baixa este conteúdo como arquivo CSV para abrir no Excel ou no Google Planilhas. Nome e telefone ficam de fora (LGPD).</small></div><button class="sec" id="csv-fechar">Fechar</button></div><div id="csv-wrap" class="bloco"></div></dialog>
+  <div id="toast" role="status" hidden></div>
+<script>
+// Demonstração: a API do Worker é simulada aqui no navegador, com dados de exemplo em memória.
+(() => {
+  const H = 3600e3;
+  const iso = (ms) => new Date(ms).toISOString().replace(/\.\d{3}Z$/, 'Z');
+  const t0 = Date.now();
+  const ago = (h) => iso(t0 - h * H);
+  const ahead = (h) => iso(t0 + h * H);
+  const db = {
+    campaigns: [
+      { id: 1, code: 'IG-OUT26', name: 'Stories outubro: aula teste grátis', channel: 'instagram', meta_ad_id: null, created_at: ago(240) },
+      { id: 2, code: 'IG-CORP', name: 'Feed: espanhol para reuniões', channel: 'instagram', meta_ad_id: '120208', created_at: ago(200) },
+      { id: 3, code: 'IG-VIAGEM', name: 'Reels: inglês para viajar', channel: 'instagram', meta_ad_id: null, created_at: ago(150) },
+    ],
+    leads: [], contacts: [], trials: [], tasks: [], students: [],
+  };
+  const seq = { leads: 0, contacts: 0, trials: 0, tasks: 0, students: 0, campaigns: 3 };
+  const lead = (o) => {
+    const l = { id: ++seq.leads, name: null, campaign_id: null, origin: 'organico', stage: 'lead', temperature: null, language: null, goal: null,
+      notes: null, consent_marketing: 0, urgency: null, level: null, company: null, availability: null, first_reply_at: null, lost_reason: null, ...o };
+    l.updated_at = l.updated_at || l.created_at;
+    db.leads.push(l);
+    db.contacts.push({ id: ++seq.contacts, lead_id: l.id, kind: 'primeiro_contato', source: 'painel', campaign_id: l.campaign_id, message: o._msg || 'Oi, quero saber das aulas', created_at: l.created_at });
+    delete l._msg;
+    return l;
+  };
+  const trial = (lead_id, teacher, scheduled_at, status) => { const t = { id: ++seq.trials, lead_id, teacher, scheduled_at, status, created_at: scheduled_at }; db.trials.push(t); return t; };
+
+  // Exemplos que cobrem cada etapa do funil
+  lead({ phone: '5511987651234', name: 'Mariana Souza', campaign_id: 2, origin: 'campanha', created_at: ago(0.6), _msg: 'Olá! Quero saber das aulas #IG-CORP' });
+  lead({ phone: '5521991112233', name: null, campaign_id: 1, origin: 'campanha', created_at: ago(1.5), _msg: 'Olá! Quero saber das aulas #IG-OUT26' });
+  lead({ phone: '5531988887766', name: 'Rafael Lima', campaign_id: 3, origin: 'campanha', created_at: ago(26), first_reply_at: ago(25.6),
+    language: 'ingles', goal: 'lazer', urgency: 'ate_1_mes', level: 'iniciante', availability: 'sábado de manhã', _msg: 'Olá! Quero saber das aulas #IG-VIAGEM' });
+  const julia = lead({ phone: '5511976543210', name: 'Júlia Andrade', campaign_id: 2, origin: 'campanha', stage: 'oportunidade', created_at: ago(50), first_reply_at: ago(49.8),
+    language: 'espanhol', goal: 'profissional', urgency: 'agora', level: 'intermediario', company: 'Grupo Andes Log', availability: 'seg e qua, 19h', temperature: 'quente', _msg: 'Olá! Quero saber das aulas #IG-CORP' });
+  trial(julia.id, 'Lucía (Argentina)', ahead(20), 'agendada');
+  const pedro = lead({ phone: '5541999990001', name: 'Pedro Martins', campaign_id: 1, origin: 'campanha', stage: 'oportunidade', created_at: ago(72), first_reply_at: ago(70),
+    language: 'espanhol', goal: 'outro', urgency: 'sem_pressa', level: 'iniciante', _msg: 'Olá! Quero saber das aulas #IG-OUT26' });
+  const tp = trial(pedro.id, 'Carlos (México)', ago(15), 'faltou');
+  db.tasks.push({ id: ++seq.tasks, lead_id: pedro.id, trial_id: tp.id, type: 'retomar_contato', due_at: iso(new Date(tp.scheduled_at).getTime() + 12 * H), attempts: 1, done_at: null, outcome: null, created_at: tp.scheduled_at });
+  const bea = lead({ phone: '5548988123456', name: 'Beatriz Rocha', stage: 'oportunidade', created_at: ago(30), first_reply_at: ago(29.9),
+    language: 'ingles', goal: 'profissional', urgency: 'agora', company: 'Studio Rocha Arquitetura', _msg: 'Oi, uma amiga me indicou' });
+  const tb = trial(bea.id, 'Emily (EUA)', ago(3), 'faltou');
+  db.tasks.push({ id: ++seq.tasks, lead_id: bea.id, trial_id: tb.id, type: 'retomar_contato', due_at: iso(new Date(tb.scheduled_at).getTime() + 12 * H), attempts: 0, done_at: null, outcome: null, created_at: tb.scheduled_at });
+  const ana = lead({ phone: '5511955554444', name: 'Ana Beatriz Costa', campaign_id: 2, origin: 'campanha', stage: 'aluno', created_at: ago(170), first_reply_at: ago(169.9),
+    language: 'espanhol', goal: 'profissional', urgency: 'agora', level: 'avancado', company: 'Nativa Cosméticos', temperature: 'quente', _msg: 'Olá! Quero saber das aulas #IG-CORP' });
+  trial(ana.id, 'Lucía (Argentina)', ago(150), 'realizada');
+  db.students.push({ id: ++seq.students, lead_id: ana.id, language: 'espanhol', package: '8 aulas/mês', started_at: ago(140) });
+  const gui = lead({ phone: '5585991234567', name: 'Guilherme Nunes', campaign_id: 1, origin: 'campanha', stage: 'aluno', created_at: ago(130), first_reply_at: ago(126),
+    language: 'ingles', goal: 'lazer', urgency: 'ate_1_mes', level: 'iniciante', temperature: 'medio', _msg: 'Olá! Quero saber das aulas #IG-OUT26' });
+  trial(gui.id, 'Emily (EUA)', ago(110), 'realizada');
+  db.students.push({ id: ++seq.students, lead_id: gui.id, language: 'ingles', package: '4 aulas/mês', started_at: ago(100) });
+  lead({ phone: '5562992223344', name: 'Fernanda Alves', campaign_id: 3, origin: 'campanha', stage: 'base_fria', created_at: ago(190), first_reply_at: ago(180),
+    language: 'ingles', goal: 'lazer', urgency: 'sem_pressa', lost_reason: 'preco', temperature: 'frio', _msg: 'Olá! Quero saber das aulas #IG-VIAGEM' });
+  lead({ phone: '5571993334455', name: 'Lucas Prado', campaign_id: 1, origin: 'campanha', stage: 'base_fria', created_at: ago(220), first_reply_at: ago(219),
+    language: 'espanhol', goal: 'lazer', lost_reason: 'sem_resposta', _msg: 'Olá! Quero saber das aulas #IG-OUT26' });
+
+  class E extends Error { constructor(s, m) { super(m); this.status = s; } }
+  const now = () => iso(Date.now());
+  const phoneN = (raw) => { const d = String(raw || '').replace(/\D/g, ''); if (d.length < 10) return null; return d.length <= 11 ? '55' + d : d; };
+  const codeOf = (m) => { const x = String(m || '').match(/#([A-Za-z0-9][A-Za-z0-9_-]{1,30})/); return x ? x[1].toUpperCase() : null; };
+  const camp = (id) => db.campaigns.find((c) => c.id === id);
+  const getLead = (id) => { const l = db.leads.find((x) => x.id === id); if (!l) throw new E(404, 'Lead não encontrado'); return l; };
+  const touch = (l) => (l.updated_at = now());
+
+  const routes = {
+    'GET config': () => ({ whatsapp_numero: '5511900000000' }),
+    'GET campaigns': () => [...db.campaigns].reverse(),
+    'POST campaigns': (_, b) => {
+      const code = String(b.code || '').replace(/^#/, '').toUpperCase().trim();
+      if (!/^[A-Z0-9][A-Z0-9_-]{1,30}$/.test(code)) throw new E(400, 'Código inválido (use letras, números e hífen, ex.: IG-OUT26)');
+      if (!b.name) throw new E(400, 'Informe o nome da campanha');
+      if (db.campaigns.some((c) => c.code === code)) throw new E(409, 'Já existe uma campanha com esse código ou anúncio');
+      const c = { id: ++seq.campaigns, code, name: b.name, channel: 'instagram', meta_ad_id: b.meta_ad_id || null, created_at: now() };
+      db.campaigns.push(c); return c;
+    },
+    'GET leads': (p, _b, q) => {
+      let ls = [...db.leads];
+      if (q.get('stage')) ls = ls.filter((l) => l.stage === q.get('stage'));
+      const s = (q.get('q') || '').toLowerCase();
+      if (s) ls = ls.filter((l) => (l.name || '').toLowerCase().includes(s) || l.phone.includes(s.replace(/\D/g, '') || s));
+      const waiting = (l) => !l.first_reply_at && l.stage === 'lead';
+      ls.sort((a, b) => (waiting(b) - waiting(a)) || (waiting(a) ? a.created_at.localeCompare(b.created_at) : b.updated_at.localeCompare(a.updated_at)));
+      return ls.map((l) => ({ ...l, campaign_code: camp(l.campaign_id)?.code ?? null, campaign_name: camp(l.campaign_id)?.name ?? null,
+        next_trial: db.trials.filter((t) => t.lead_id === l.id && t.status === 'agendada').map((t) => t.scheduled_at).sort()[0] || null,
+        open_tasks: db.tasks.filter((k) => k.lead_id === l.id && !k.done_at).length }));
+    },
+    'POST leads': (_, b) => {
+      const phone = phoneN(b.phone); if (!phone) throw new E(400, 'Telefone inválido');
+      const code = codeOf(b.message); const c = code && db.campaigns.find((x) => x.code === code);
+      const ex = db.leads.find((l) => l.phone === phone);
+      if (ex) {
+        const re = ex.stage === 'base_fria'; if (re) ex.stage = 'lead';
+        ex.name = ex.name || b.name || null; touch(ex);
+        db.contacts.push({ id: ++seq.contacts, lead_id: ex.id, kind: 'retorno', source: 'painel', campaign_id: c?.id ?? null, message: b.message || null, created_at: now() });
+        return { lead_id: ex.id, novo: false, reaberto: re, campanha: c?.code ?? null };
+      }
+      const l = lead({ phone, name: b.name || null, campaign_id: c?.id ?? null, origin: c ? 'campanha' : 'organico', created_at: now(), _msg: b.message || null });
+      return { lead_id: l.id, novo: true, reaberto: false, campanha: c?.code ?? null };
+    },
+    'GET leads/:id': ([id]) => {
+      const l = getLead(id);
+      return { ...l, campaign_code: camp(l.campaign_id)?.code ?? null, campaign_name: camp(l.campaign_id)?.name ?? null,
+        contacts: db.contacts.filter((c) => c.lead_id === id).map((c) => ({ ...c, campaign_code: camp(c.campaign_id)?.code ?? null })).reverse(),
+        trials: db.trials.filter((t) => t.lead_id === id).reverse(), tasks: db.tasks.filter((k) => k.lead_id === id).reverse(),
+        student: db.students.find((s) => s.lead_id === id) || null };
+    },
+    'PATCH leads/:id': ([id], b) => {
+      const l = getLead(id);
+      for (const k of ['name', 'temperature', 'language', 'goal', 'notes', 'urgency', 'level', 'company', 'availability', 'lost_reason']) if (k in b) l[k] = b[k] === '' ? null : b[k];
+      if ('consent_marketing' in b) l.consent_marketing = b.consent_marketing ? 1 : 0;
+      touch(l); return l;
+    },
+    'POST leads/:id/replied': ([id]) => { const l = getLead(id); l.first_reply_at = l.first_reply_at || now(); touch(l); return l; },
+    'POST leads/:id/trials': ([id], b) => {
+      const l = getLead(id);
+      if (!b.teacher || !b.scheduled_at) throw new E(400, 'Informe professor e horário');
+      if (l.stage === 'aluno') throw new E(409, 'Este contato já é aluno');
+      const at = iso(new Date(b.scheduled_at).getTime());
+      if (db.trials.some((t) => t.teacher === b.teacher && t.status === 'agendada' && t.scheduled_at === at)) throw new E(409, 'O professor já tem aula experimental neste horário');
+      db.trials.filter((t) => t.lead_id === id && t.status === 'agendada').forEach((t) => (t.status = 'reagendada'));
+      const t = trial(id, b.teacher, at, 'agendada'); t.created_at = now();
+      l.stage = 'oportunidade'; touch(l); return t;
+    },
+    'PATCH trials/:id': ([id], b) => {
+      const t = db.trials.find((x) => x.id === id); if (!t) throw new E(404, 'Aula não encontrada');
+      if (t.status !== 'agendada') throw new E(409, `A aula já está como ${t.status}`);
+      t.status = b.status;
+      if (b.status === 'faltou') db.tasks.push({ id: ++seq.tasks, lead_id: t.lead_id, trial_id: t.id, type: 'retomar_contato', due_at: iso(new Date(t.scheduled_at).getTime() + 12 * H), attempts: 0, done_at: null, outcome: null, created_at: now() });
+      return { ok: true };
+    },
+    'GET tasks': () => db.tasks.filter((k) => !k.done_at).sort((a, b) => a.due_at.localeCompare(b.due_at)).map((k) => {
+      const l = getLead(k.lead_id); const t = db.trials.find((x) => x.id === k.trial_id);
+      return { ...k, name: l.name, phone: l.phone, temperature: l.temperature, trial_at: t?.scheduled_at, teacher: t?.teacher, atrasada: k.due_at < now() ? 1 : 0 };
+    }),
+    'POST tasks/:id/attempt': ([id], b) => {
+      const k = db.tasks.find((x) => x.id === id && !x.done_at); if (!k) throw new E(404, 'Tarefa não encontrada ou já concluída');
+      k.attempts++;
+      if (b.answered) { k.done_at = now(); k.outcome = 'respondeu'; return { ok: true, resultado: 'respondeu' }; }
+      if (k.attempts >= 3) {
+        k.done_at = now(); k.outcome = 'base_fria';
+        const l = getLead(k.lead_id); if (l.stage !== 'aluno') { l.stage = 'base_fria'; l.lost_reason = l.lost_reason || 'sem_resposta'; touch(l); }
+        return { ok: true, resultado: 'base_fria', tentativas: k.attempts };
+      }
+      k.due_at = iso(Date.now() + 12 * H); return { ok: true, resultado: 'sem_resposta', tentativas: k.attempts };
+    },
+    'POST leads/:id/convert': ([id], b) => {
+      const l = getLead(id);
+      if (!['espanhol', 'ingles'].includes(b.language)) throw new E(400, 'Informe o idioma (espanhol ou ingles)');
+      if (!b.package) throw new E(400, 'Informe o pacote contratado');
+      if (l.stage === 'aluno') throw new E(409, 'Este contato já é aluno');
+      db.students.push({ id: ++seq.students, lead_id: id, language: b.language, package: b.package, started_at: now() });
+      l.stage = 'aluno'; l.language = b.language; touch(l);
+      db.tasks.filter((k) => k.lead_id === id && !k.done_at).forEach((k) => { k.done_at = now(); k.outcome = 'respondeu'; });
+      return { ok: true };
+    },
+    'POST leads/:id/archive': ([id], b) => {
+      const l = getLead(id); if (l.stage === 'aluno') throw new E(409, 'Lead não encontrado ou já é aluno');
+      l.stage = 'base_fria'; l.lost_reason = b.lost_reason || l.lost_reason; touch(l);
+      db.tasks.filter((k) => k.lead_id === id && !k.done_at).forEach((k) => { k.done_at = now(); k.outcome = 'base_fria'; });
+      return { ok: true };
+    },
+    'GET report/campaigns': () => {
+      const groups = new Map();
+      for (const l of db.leads) {
+        const c = camp(l.campaign_id); const key = c ? c.code : 'ORGANICO';
+        const g = groups.get(key) || { code: key, name: c ? c.name : 'Orgânico / indicação', leads: 0, oportunidades: 0, alunos: 0, base_fria: 0 };
+        g.leads++; if (db.trials.some((t) => t.lead_id === l.id)) g.oportunidades++;
+        if (l.stage === 'aluno') g.alunos++; if (l.stage === 'base_fria') g.base_fria++;
+        groups.set(key, g);
+      }
+      return [...groups.values()].sort((a, b) => b.alunos - a.alunos || b.leads - a.leads);
+    },
+  };
+
+  // Mesmo formato de planilha que GET /api/export/leads.csv devolve no sistema real
+  window.demoCsvRows = () => db.leads.map((l) => {
+    const st = db.students.find((s) => s.lead_id === l.id);
+    const mins = l.first_reply_at ? Math.round((new Date(l.first_reply_at) - new Date(l.created_at)) / 60e3) : '';
+    return { id: l.id, origem: l.origin, campanha: camp(l.campaign_id)?.code || '', etapa: l.stage,
+      virou_oportunidade: db.trials.some((t) => t.lead_id === l.id) ? 1 : 0, virou_aluno: l.stage === 'aluno' ? 1 : 0,
+      idioma: l.language || '', objetivo: l.goal || '', urgencia: l.urgency || '', nivel: l.level || '', empresa: l.company || '',
+      palpite_temperatura: l.temperature || '', minutos_ate_primeira_resposta: mins,
+      faltas: db.trials.filter((t) => t.lead_id === l.id && t.status === 'faltou').length,
+      dias_ate_virar_aluno: st ? Math.round((new Date(st.started_at) - new Date(l.created_at)) / 864e5) : '', motivo_perda: l.lost_reason || '' };
+  });
+
+  const realFetch = window.fetch.bind(window);
+  window.fetch = async (input, init = {}) => {
+    const url = new URL(typeof input === 'string' ? input : input.url, location.href);
+    if (!url.pathname.startsWith('/api/')) return realFetch(input, init);
+    const parts = url.pathname.split('/').filter(Boolean).slice(1);
+    const ids = parts.filter((p) => /^\d+$/.test(p)).map(Number);
+    const key = `${init.method || 'GET'} ${parts.map((p) => (/^\d+$/.test(p) ? ':id' : p)).join('/')}`;
+    const send = (data, status = 200) => new Response(JSON.stringify(data), { status, headers: { 'content-type': 'application/json' } });
+    try {
+      const fn = routes[key]; if (!fn) throw new E(404, 'Rota não encontrada');
+      return send(fn(ids, init.body ? JSON.parse(init.body) : {}, url.searchParams), init.method === 'POST' ? 201 : 200);
+    } catch (e) { return send({ erro: e.message }, e.status || 500); }
+  };
+})();
+
+</script>
+<script type="module">
+
+function toast(msg) { const t = document.querySelector('#toast'); t.textContent = msg; t.hidden = false; clearTimeout(toast.t); toast.t = setTimeout(() => (t.hidden = true), 3500); }
+document.querySelector('#demo-export').addEventListener('click', () => {
+  const rows = window.demoCsvRows(); const cols = Object.keys(rows[0] || {});
+  const e = (v) => String(v ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
+  document.querySelector('#csv-wrap').innerHTML = `<table><thead><tr>${cols.map((c) => `<th>${e(c)}</th>`).join('')}</tr></thead><tbody>${rows.map((r) => `<tr>${cols.map((c) => `<td>${e(r[c])}</td>`).join('')}</tr>`).join('')}</tbody></table>`;
+  document.querySelector('#csv').showModal();
+});
+document.querySelector('#csv-fechar').addEventListener('click', () => document.querySelector('#csv').close());
+
+// Painel do atendente: fila de leads, tarefas de retomada e resultado por campanha.
+
+const $ = (sel) => document.querySelector(sel);
+const ETAPAS = { lead: 'Lead', oportunidade: 'Oportunidade', aluno: 'Aluno', base_fria: 'Lead frio (base)' };
+const TEMPS = { quente: 'Quente', medio: 'Médio', frio: 'Frio' };
+const IDIOMAS = { espanhol: 'Espanhol', ingles: 'Inglês' };
+const OBJETIVOS = { profissional: 'Profissional', lazer: 'Lazer / viagem', outro: 'Outro' };
+const URGENCIAS = { agora: 'Quer começar já', ate_1_mes: 'Em até 1 mês', sem_pressa: 'Sem pressa' };
+const NIVEIS = { iniciante: 'Iniciante', intermediario: 'Intermediário', avancado: 'Avançado' };
+const MOTIVOS = { preco: 'Preço', horario: 'Horário', sem_resposta: 'Sem resposta', so_pesquisando: 'Só pesquisando', outro: 'Outro' };
+const STATUS_AULA = { agendada: 'Agendada', realizada: 'Realizada', faltou: 'Faltou', reagendada: 'Reagendada', cancelada: 'Cancelada' };
+let config = { whatsapp_numero: '' };
+
+// Nomes e mensagens chegam do WhatsApp: tudo que vai para o HTML passa por aqui
+const esc = (v) => String(v ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
+const data = (iso) => (iso ? new Date(iso).toLocaleString('pt-BR', { dateStyle: 'short', timeStyle: 'short' }) : '');
+const fone = (p) => (p?.startsWith('55') && p.length >= 12 ? `+55 (${p.slice(2, 4)}) ${p.slice(4, -4)}-${p.slice(-4)}` : '+' + p);
+
+async function api(path, options = {}) {
+  const res = await fetch('/api' + path, {
+    ...options,
+    headers: { 'content-type': 'application/json' },
+    body: options.body ? JSON.stringify(options.body) : undefined,
+  });
+  const json = await res.json().catch(() => ({}));
+  if (!res.ok) throw new Error(json.erro || `Erro ${res.status}`);
+  return json;
+}
+
+function avisar(el, texto, erro = false) {
+  el.textContent = texto;
+  el.className = 'aviso' + (erro ? ' erro' : '');
+}
+
+// ------------------------------------------------------------ abas
+
+document.querySelectorAll('nav button').forEach((btn) => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('nav button').forEach((b) => b.classList.toggle('ativo', b === btn));
+    document.querySelectorAll('.tab').forEach((t) => (t.hidden = t.id !== btn.dataset.tab));
+    carregar(btn.dataset.tab);
+  });
+});
+
+function carregar(tab) {
+  if (tab === 'fila') return carregarLeads();
+  if (tab === 'tarefas') return carregarTarefas();
+  if (tab === 'campanhas') return carregarRelatorio();
+}
+
+// ------------------------------------------------------------ fila
+
+$('#form-lead').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const form = e.target;
+  const aviso = $('#aviso-lead');
+  try {
+    const r = await api('/leads', { method: 'POST', body: Object.fromEntries(new FormData(form)) });
+    const origem = r.campanha ? `campanha ${r.campanha}` : 'orgânico / indicação';
+    avisar(aviso, r.novo ? `Lead criado (${origem}).` : r.reaberto ? 'Esse número estava na base fria e voltou para a fila.' : 'Esse número já existia: o novo contato foi registrado no mesmo lead.');
+    form.reset();
+    carregarLeads();
+  } catch (err) { avisar(aviso, err.message, true); }
+});
+
+let buscaTimer;
+$('#busca').addEventListener('input', () => { clearTimeout(buscaTimer); buscaTimer = setTimeout(carregarLeads, 250); });
+$('#filtro-etapa').addEventListener('change', carregarLeads);
+
+async function carregarLeads() {
+  const params = new URLSearchParams();
+  if ($('#busca').value) params.set('q', $('#busca').value);
+  if ($('#filtro-etapa').value) params.set('stage', $('#filtro-etapa').value);
+  const leads = await api('/leads?' + params);
+  $('#lista-leads').innerHTML = leads.length ? leads.map((l) => `
+    <tr data-id="${l.id}">
+      <td>${esc(l.name || 'Sem nome')}<small>${esc(fone(l.phone))}</small></td>
+      <td><span class="etapa ${l.stage}">${ETAPAS[l.stage]}</span>${l.open_tasks ? '<small>tarefa aberta</small>' : ''}</td>
+      <td>${l.first_reply_at ? esc(data(l.first_reply_at)) : l.stage === 'lead' ? '<span class="atraso">Aguardando</span>' : ''}</td>
+      <td>${esc([IDIOMAS[l.language], OBJETIVOS[l.goal], URGENCIAS[l.urgency]].filter(Boolean).join(' · ')) || '<small>a completar</small>'}</td>
+      <td>${esc(l.campaign_code || 'Orgânico')}</td>
+      <td>${l.next_trial ? esc(data(l.next_trial)) : ''}</td>
+    </tr>`).join('') : '<tr><td colspan="6" class="vazio">Nenhum lead ainda.</td></tr>';
+}
+
+$('#lista-leads').addEventListener('click', (e) => {
+  const tr = e.target.closest('tr[data-id]');
+  if (tr) abrirFicha(Number(tr.dataset.id));
+});
+
+// ------------------------------------------------------------ ficha do lead
+
+async function abrirFicha(id) {
+  const l = await api('/leads/' + id);
+  const aulaAberta = l.trials.find((t) => t.status === 'agendada');
+  const sel = (name, opts, atual) => `<select name="${name}"><option value="">—</option>${Object.entries(opts).map(([v, t]) => `<option value="${v}" ${v === atual ? 'selected' : ''}>${t}</option>`).join('')}</select>`;
+  $('#ficha-conteudo').innerHTML = `
+    <div class="ficha-topo">
+      <div><h2>${esc(l.name || 'Sem nome')}</h2>${esc(fone(l.phone))} · <span class="etapa ${l.stage}">${ETAPAS[l.stage]}</span><br>
+        <small>Origem: ${esc(l.campaign_name ? `${l.campaign_code} · ${l.campaign_name}` : 'orgânico / indicação')} · desde ${esc(data(l.created_at))}</small><br>
+        ${l.first_reply_at ? `<small>Primeira resposta em ${esc(data(l.first_reply_at))}</small>` : '<button type="button" class="sec" data-acao="respondi">Respondi no WhatsApp agora</button>'}</div>
+      <button class="sec" data-acao="fechar">Fechar</button>
+    </div>
+
+    <form class="bloco" data-form="triagem">
+      <div class="grid">
+        <label>Nome <input name="name" value="${esc(l.name)}"></label>
+        <label>Idioma ${sel('language', IDIOMAS, l.language)}</label>
+        <label>Objetivo ${sel('goal', OBJETIVOS, l.goal)}</label>
+        <label>Urgência ${sel('urgency', URGENCIAS, l.urgency)}</label>
+        <label>Nível ${sel('level', NIVEIS, l.level)}</label>
+        <label>Empresa <input name="company" value="${esc(l.company)}" placeholder="Se for profissional"></label>
+        <label>Disponibilidade <input name="availability" value="${esc(l.availability)}" placeholder="Ex.: seg e qua à noite"></label>
+        <label>Seu palpite (opcional) ${sel('temperature', TEMPS, l.temperature)}</label>
+        <label class="largo">Observações <textarea name="notes" rows="2">${esc(l.notes)}</textarea></label>
+        <label class="largo" style="flex-direction:row;align-items:center;gap:8px"><input type="checkbox" name="consent_marketing" ${l.consent_marketing ? 'checked' : ''}> Autorizou receber campanhas (LGPD)</label>
+      </div>
+      <button>Salvar triagem</button>
+    </form>
+
+    ${l.stage !== 'aluno' ? `
+    <form class="bloco" data-form="aula">
+      <h2>${aulaAberta ? 'Reagendar' : 'Agendar'} aula experimental</h2>
+      ${aulaAberta ? `<p>Agendada para <b>${esc(data(aulaAberta.scheduled_at))}</b> com ${esc(aulaAberta.teacher)}.
+        <button type="button" class="sec" data-acao="realizada" data-trial="${aulaAberta.id}">Compareceu</button>
+        <button type="button" class="perigo" data-acao="faltou" data-trial="${aulaAberta.id}">Faltou</button></p>` : ''}
+      <div class="linha">
+        <label>Professor <input name="teacher" required></label>
+        <label>Data e hora <input name="scheduled_at" type="datetime-local" required></label>
+        <button>${aulaAberta ? 'Reagendar' : 'Agendar'}</button>
+      </div>
+    </form>
+
+    <form class="bloco" data-form="aluno">
+      <h2>Contratou? Criar conta de aluno</h2>
+      <div class="linha">
+        <label>Idioma ${sel('language', IDIOMAS, l.language)}</label>
+        <label>Pacote <input name="package" required placeholder="8 aulas/mês"></label>
+        <button>Virar aluno</button>
+      </div>
+      ${l.stage !== 'base_fria' ? `<div class="linha" style="margin-top:10px">
+        <label>Motivo de não fechar ${sel('lost_reason', MOTIVOS, l.lost_reason)}</label>
+        <button type="button" class="perigo" data-acao="arquivar">Não fechou: mover para base fria</button>` : `<p><small>Na base fria${l.lost_reason ? ' · motivo: ' + esc(MOTIVOS[l.lost_reason] || l.lost_reason) : ''}</small></p><div>`}
+      </div>
+    </form>` : `<p class="bloco">Aluno desde ${esc(data(l.student?.started_at))} · ${esc(l.student?.language)} · ${esc(l.student?.package)}</p>`}
+
+    <div class="bloco"><h2>Histórico</h2><ul class="hist">
+      ${[...l.contacts.map((c) => ({ at: c.created_at, t: `${c.kind === 'primeiro_contato' ? 'Primeiro contato' : 'Voltou a escrever'}${c.campaign_code ? ' (' + c.campaign_code + ')' : ''}: ${c.message || ''}` })),
+         ...l.trials.map((t) => ({ at: t.scheduled_at, t: `Aula experimental com ${t.teacher}: ${STATUS_AULA[t.status]}` })),
+         ...l.tasks.map((k) => ({ at: k.created_at, t: `Tarefa de retomar contato (${k.attempts} tentativa(s))${k.outcome ? ': ' + k.outcome.replace('_', ' ') : ''}` }))]
+        .sort((a, b) => b.at.localeCompare(a.at)).map((h) => `<li><small>${esc(data(h.at))}</small> ${esc(h.t)}</li>`).join('')}
+    </ul></div>
+    <p class="aviso" id="aviso-ficha" role="status"></p>`;
+
+  const dlg = $('#ficha');
+  const aviso = () => $('#aviso-ficha');
+  const depois = async () => { await abrirFicha(id); carregarLeads(); atualizarBadge(); };
+  dlg.onsubmit = async (e) => {
+    e.preventDefault();
+    const f = e.target;
+    const dados = Object.fromEntries(new FormData(f));
+    try {
+      if (f.dataset.form === 'triagem') await api('/leads/' + id, { method: 'PATCH', body: { ...dados, consent_marketing: f.consent_marketing.checked } });
+      if (f.dataset.form === 'aula') await api(`/leads/${id}/trials`, { method: 'POST', body: { ...dados, scheduled_at: new Date(dados.scheduled_at).toISOString() } });
+      if (f.dataset.form === 'aluno') await api(`/leads/${id}/convert`, { method: 'POST', body: dados });
+      await depois();
+    } catch (err) { avisar(aviso(), err.message, true); }
+  };
+  dlg.onclick = async (e) => {
+    const acao = e.target.dataset?.acao;
+    if (!acao) return;
+    if (acao === 'fechar') return dlg.close();
+    try {
+      if (acao === 'realizada' || acao === 'faltou') await api('/trials/' + e.target.dataset.trial, { method: 'PATCH', body: { status: acao } });
+      if (acao === 'respondi') await api(`/leads/${id}/replied`, { method: 'POST' });
+      if (acao === 'arquivar') await api(`/leads/${id}/archive`, { method: 'POST', body: { lost_reason: dlg.querySelector('[name=lost_reason]').value || null } });
+      await depois();
+    } catch (err) { avisar(aviso(), err.message, true); }
+  };
+  if (!dlg.open) dlg.showModal();
+}
+
+// ------------------------------------------------------------ tarefas
+
+async function carregarTarefas() {
+  const tarefas = await api('/tasks');
+  atualizarBadge(tarefas);
+  $('#lista-tarefas').innerHTML = tarefas.length ? tarefas.map((k) => `
+    <div class="card tarefa ${k.atrasada ? 'atrasada' : ''}">
+      <div><b>${esc(k.name || 'Sem nome')}</b> · ${esc(fone(k.phone))}<br>
+        <small>Faltou à aula de ${esc(data(k.trial_at))} com ${esc(k.teacher)} · ${k.attempts} tentativa(s)</small><br>
+        ${k.atrasada ? '<span class="atraso">Atrasada</span> · ' : ''}<small>Retomar até ${esc(data(k.due_at))}</small></div>
+      <div class="acoes">
+        <a href="https://wa.me/${esc(k.phone)}" target="_blank" rel="noopener"><button class="sec" type="button">Abrir WhatsApp</button></a>
+        <button data-tarefa="${k.id}" data-resp="1">Respondeu</button>
+        <button class="perigo" data-tarefa="${k.id}" data-resp="0">Sem resposta</button>
+        <button class="sec" data-lead="${k.lead_id}">Ficha</button>
+      </div>
+    </div>`).join('') : '<p class="vazio">Nenhuma tarefa aberta. Quando um lead faltar à aula experimental, a tarefa de retomar o contato aparece aqui.</p>';
+}
+
+$('#lista-tarefas').addEventListener('click', async (e) => {
+  const b = e.target.closest('button');
+  if (!b) return;
+  if (b.dataset.lead) return abrirFicha(Number(b.dataset.lead));
+  if (!b.dataset.tarefa) return;
+  const r = await api(`/tasks/${b.dataset.tarefa}/attempt`, { method: 'POST', body: { answered: b.dataset.resp === '1' } });
+  if (r.resultado === 'base_fria') toast(`Sem resposta após ${r.tentativas} tentativas: o lead foi para a base fria.`);
+  else toast(r.resultado === 'respondeu' ? 'Tarefa concluída: o lead respondeu.' : `Tentativa ${r.tentativas} registrada. Próxima tentativa no próximo turno.`);
+  carregarTarefas();
+});
+
+async function atualizarBadge(lista) {
+  const tarefas = lista || (await api('/tasks'));
+  const atrasadas = tarefas.filter((t) => t.atrasada).length;
+  const badge = $('#badge-tarefas');
+  badge.hidden = !atrasadas;
+  badge.textContent = atrasadas;
+}
+
+// ------------------------------------------------------------ campanhas
+
+$('#form-campanha').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  try {
+    await api('/campaigns', { method: 'POST', body: Object.fromEntries(new FormData(e.target)) });
+    avisar($('#aviso-campanha'), 'Campanha criada. Use o link abaixo no botão do anúncio.');
+    e.target.reset();
+    carregarRelatorio();
+  } catch (err) { avisar($('#aviso-campanha'), err.message, true); }
+});
+
+async function carregarRelatorio() {
+  const linhas = await api('/report/campaigns');
+  const campanhas = await api('/campaigns');
+  const todas = [...linhas, ...campanhas.filter((c) => !linhas.some((l) => l.code === c.code)).map((c) => ({ code: c.code, name: c.name, leads: 0, oportunidades: 0, alunos: 0, base_fria: 0 }))];
+  const link = (code) => config.whatsapp_numero
+    ? `https://wa.me/${config.whatsapp_numero}?text=${encodeURIComponent(`Olá! Quero saber das aulas #${code}`)}`
+    : '';
+  $('#relatorio').innerHTML = todas.length ? todas.map((c) => `
+    <tr>
+      <td>${esc(c.code)}<small>${esc(c.name)}</small></td>
+      <td>${c.leads}</td><td>${c.oportunidades}</td><td>${c.alunos}</td>
+      <td>${c.leads ? Math.round((c.alunos / c.leads) * 100) + '%' : '—'}</td>
+      <td>${c.base_fria}</td>
+      <td>${c.code === 'ORGANICO' ? '' : link(c.code) ? `<code>${esc(link(c.code))}</code>` : '<small>defina WHATSAPP_NUMERO</small>'}</td>
+    </tr>`).join('') : '<tr><td colspan="7" class="vazio">Crie a primeira campanha acima.</td></tr>';
+}
+
+// ------------------------------------------------------------ início
+
+config = await api('/config').catch(() => config);
+carregarLeads();
+atualizarBadge();
+
+</script>
+</body>
+</html>

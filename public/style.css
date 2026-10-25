@@ -1,0 +1,63 @@
+:root {
+  --bg: #f6f8f9; --surface: #ffffff; --fg: #1b2a33; --muted: #5a6a74; --line: #dfe5e8;
+  --accent: #3d6f73; --accent-ink: #ffffff;
+  --quente: #c2410c; --medio: #a16207; --frio: #2563eb; --erro: #b91c1c; --ok: #2f6f4f;
+  --lead: #e3eefb; --oportunidade: #fbf0c9; --aluno: #e4f3dc; --base_fria: #eceff1;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #12181c; --surface: #1a2227; --fg: #e6edf1; --muted: #a3b1ba; --line: #2c373e;
+    --accent: #4f8c90; --quente: #fb923c; --medio: #facc15; --frio: #60a5fa; --erro: #f87171; --ok: #7fd0a5;
+    --lead: #1d2a3a; --oportunidade: #362f17; --aluno: #1f3220; --base_fria: #262d31;
+    color-scheme: dark;
+  }
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--fg); font: 15px/1.45 system-ui, "Segoe UI", sans-serif; }
+.top { background: var(--surface); border-bottom: 1px solid var(--line); padding: 12px 16px; display: flex; flex-wrap: wrap; gap: 8px 24px; align-items: center; justify-content: space-between; }
+h1 { font-size: 1.15rem; margin: 0; }
+h1 span { font-weight: 400; color: var(--muted); }
+h2 { font-size: 1rem; margin: 0 0 12px; }
+nav { display: flex; gap: 4px; }
+nav button { background: none; color: var(--fg); border: 1px solid transparent; }
+nav button.ativo { border-color: var(--accent); color: var(--accent); }
+nav b { background: var(--erro); color: #fff; border-radius: 10px; padding: 0 7px; font-size: .75rem; }
+main { max-width: 1100px; margin: 0 auto; padding: 16px; }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 16px; margin-bottom: 16px; }
+.grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; margin-bottom: 12px; }
+.largo { grid-column: 1 / -1; }
+label { display: flex; flex-direction: column; gap: 4px; font-size: .85rem; color: var(--muted); }
+input, select, textarea { font: inherit; color: var(--fg); background: var(--bg); border: 1px solid var(--line); border-radius: 6px; padding: 7px 9px; min-width: 0; }
+button { font: inherit; cursor: pointer; background: var(--accent); color: var(--accent-ink); border: 0; border-radius: 6px; padding: 7px 14px; }
+button.sec { background: none; color: var(--accent); border: 1px solid var(--accent); }
+button.perigo { background: none; color: var(--erro); border: 1px solid var(--erro); }
+.aviso { margin: 8px 0 0; min-height: 1.2em; font-size: .9rem; }
+.aviso.erro { color: var(--erro); }
+.filtros { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 10px; }
+.filtros input { flex: 1 1 240px; }
+.tabela-wrap { overflow-x: auto; background: var(--surface); border: 1px solid var(--line); border-radius: 8px; }
+table { width: 100%; border-collapse: collapse; }
+th, td { text-align: left; padding: 9px 12px; border-bottom: 1px solid var(--line); white-space: nowrap; }
+th { font-size: .8rem; color: var(--muted); font-weight: 600; }
+tbody tr { cursor: pointer; }
+tbody tr:hover { background: var(--bg); }
+td small { display: block; color: var(--muted); }
+.etapa { padding: 2px 8px; border-radius: 4px; font-size: .8rem; color: var(--fg); }
+.etapa.lead { background: var(--lead); } .etapa.oportunidade { background: var(--oportunidade); }
+.etapa.aluno { background: var(--aluno); } .etapa.base_fria { background: var(--base_fria); }
+.temp { font-weight: 600; font-size: .85rem; }
+.temp.quente { color: var(--quente); } .temp.medio { color: var(--medio); } .temp.frio { color: var(--frio); }
+.tarefa { display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: center; justify-content: space-between; }
+.tarefa.atrasada { border-color: var(--erro); }
+.tarefa .acoes { display: flex; gap: 6px; flex-wrap: wrap; }
+.atraso { color: var(--erro); font-weight: 600; }
+dialog { width: min(640px, calc(100vw - 32px)); border: 1px solid var(--line); border-radius: 10px; background: var(--surface); color: var(--fg); padding: 20px; }
+dialog::backdrop { background: rgb(0 0 0 / .4); }
+.ficha-topo { display: flex; justify-content: space-between; gap: 12px; align-items: flex-start; }
+.bloco { border-top: 1px solid var(--line); padding-top: 12px; margin-top: 12px; }
+.linha { display: flex; flex-wrap: wrap; gap: 8px; align-items: end; }
+.hist { list-style: none; padding: 0; margin: 0; font-size: .9rem; }
+.hist li { padding: 4px 0; border-bottom: 1px dashed var(--line); }
+.vazio { color: var(--muted); padding: 16px; text-align: center; }
+code { font-size: .8rem; word-break: break-all; }

@@ -1,0 +1,16 @@
+{
+  "name": "conexion-crm",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "db:local": "wrangler d1 migrations apply conexion-crm --local",
+    "db:remote": "wrangler d1 migrations apply conexion-crm --remote",
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "smoke": "bash scripts/smoke.sh"
+  },
+  "devDependencies": {
+    "wrangler": "^4.40.0"
+  }
+}

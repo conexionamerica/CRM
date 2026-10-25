@@ -1,0 +1,29 @@
+{
+  // Configuração do Worker. Antes do primeiro deploy, rode "npx wrangler d1 create conexion-crm"
+  // e cole o database_id que o comando devolver.
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "conexion-crm",
+  "main": "src/index.js",
+  "compatibility_date": "2026-06-01",
+  "assets": {
+    "directory": "./public",
+    "binding": "ASSETS",
+    "run_worker_first": ["/api/*", "/webhook/*"]
+  },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "conexion-crm",
+      "database_id": "COLE-AQUI-O-ID-DO-D1",
+      "migrations_dir": "migrations"
+    }
+  ],
+  // A cada 30 min: aulas experimentais que passaram sem presença viram "faltou" e geram tarefa
+  "triggers": { "crons": ["*/30 * * * *"] },
+  "vars": {
+    "WHATSAPP_NUMERO": "5511900000000",   // número da escola, usado para montar o link de cada anúncio
+    "RETOMAR_HORAS": "12",          // contato em até 12h após a aula (próximo turno)
+    "FALTA_TOLERANCIA_MIN": "60",   // minutos após o fim da aula para considerar falta
+    "MAX_TENTATIVAS": "3"           // tentativas sem resposta antes de ir para a base fria
+  }
+}
