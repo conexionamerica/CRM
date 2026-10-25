@@ -7,7 +7,7 @@
     "db:local": "wrangler d1 migrations apply conexion-crm --local",
     "db:remote": "wrangler d1 migrations apply conexion-crm --remote",
     "dev": "wrangler dev",
-    "deploy": "wrangler deploy",
+    "deploy": "wrangler d1 migrations apply conexion-crm --remote && wrangler deploy",
     "smoke": "bash scripts/smoke.sh"
   },
   "devDependencies": {
