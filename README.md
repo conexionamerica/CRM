@@ -25,19 +25,22 @@ Painel para o atendente acompanhar o funil **anúncio no Instagram → contato n
 1. **Sem depender da Meta (já funciona):** cada anúncio usa o link `https://wa.me/<número>?text=Olá! Quero saber das aulas #IG-OUT26`. O atendente cola o telefone e a primeira mensagem no painel, e o sistema lê o código da campanha.
 2. **Com a API oficial do WhatsApp (Cloud API):** ao cadastrar o webhook `https://<seu-worker>/webhook/whatsapp`, todo contato vira lead sozinho. Em anúncios Click-to-WhatsApp, a Meta envia o id do anúncio, e o sistema liga o lead à campanha que tem esse "ID do anúncio na Meta".
 
-## Instalar
+## Publicar na Cloudflare (pelo navegador, sem instalar nada)
 
-Pré-requisitos: Node 20 ou mais novo e uma conta gratuita na Cloudflare.
+1. **Crie o banco.** No painel da Cloudflare, abra Storage & Databases → D1 → Create database, com o nome `conexion-crm`. Copie o Database ID e troque `COLE-AQUI-O-ID-DO-D1` no `wrangler.jsonc`.
+2. **Ligue o repositório.** Em Workers & Pages → Create → Import a repository, escolha `conexionamerica/CRM`. Em Deploy command, use `npm run deploy`. Esse comando cria as tabelas no D1 e publica o Worker. A cada push na `main`, a Cloudflare publica de novo sozinha.
+3. **Abra o endereço** `https://conexion-crm.<sua-conta>.workers.dev` que a Cloudflare mostrar no fim do deploy.
+
+Antes de usar com leads reais, troque `WHATSAPP_NUMERO` no `wrangler.jsonc` pelo número da escola.
+
+Se preferir publicar pelo terminal (Node 20 ou mais novo):
 
 ```bash
 npm install
 npx wrangler login
 npx wrangler d1 create conexion-crm      # copie o database_id para o wrangler.jsonc
-npm run db:remote                         # cria as tabelas no D1
-npx wrangler deploy
+npm run deploy                            # cria as tabelas e publica
 ```
-
-Depois, no `wrangler.jsonc`, troque `WHATSAPP_NUMERO` pelo número da escola e rode `npx wrangler deploy` de novo.
 
 **Proteja o painel antes de usar com dados reais.** No painel da Cloudflare, em Zero Trust → Access → Applications, crie uma aplicação para o domínio do Worker liberando só os e-mails da equipe (gratuito até 50 pessoas). Deixe o caminho `/webhook/whatsapp` fora da regra, porque quem chama é a Meta.
 
