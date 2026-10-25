@@ -27,7 +27,7 @@ Painel para o atendente acompanhar o funil **anúncio no Instagram → contato n
 
 ## Publicar na Cloudflare (pelo navegador, sem instalar nada)
 
-1. **Crie o banco.** No painel da Cloudflare, abra Storage & Databases → D1 → Create database, com o nome `conexion-crm`. Copie o Database ID e troque `COLE-AQUI-O-ID-DO-D1` no `wrangler.jsonc`.
+1. **Crie o banco.** No painel da Cloudflare, abra Storage & Databases → D1 → Create database, com o nome `conexion-crm`. Copie o Database ID e coloque em `database_id` no `wrangler.jsonc`.
 2. **Ligue o repositório.** Em Workers & Pages → Create → Import a repository, escolha `conexionamerica/CRM`. Em Deploy command, use `npm run deploy`. Esse comando cria as tabelas no D1 e publica o Worker. A cada push na `main`, a Cloudflare publica de novo sozinha.
 3. **Abra o endereço** `https://conexion-crm.<sua-conta>.workers.dev` que a Cloudflare mostrar no fim do deploy.
 

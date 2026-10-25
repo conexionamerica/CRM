@@ -14,7 +14,7 @@
     {
       "binding": "DB",
       "database_name": "conexion-crm",
-      "database_id": "COLE-AQUI-O-ID-DO-D1",
+      "database_id": "9da02c91-013b-4ac8-b62a-5bbce317d0b8",
       "migrations_dir": "migrations"
     }
   ],
