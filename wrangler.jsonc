@@ -8,7 +8,7 @@
   "assets": {
     "directory": "./public",
     "binding": "ASSETS",
-    "run_worker_first": ["/api/*", "/webhook/*"]
+    "run_worker_first": true   // o Worker vê toda requisição, para exigir a senha do painel
   },
   "d1_databases": [
     {

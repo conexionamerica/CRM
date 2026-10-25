@@ -42,7 +42,9 @@ npx wrangler d1 create conexion-crm      # copie o database_id para o wrangler.j
 npm run deploy                            # cria as tabelas e publica
 ```
 
-**Proteja o painel antes de usar com dados reais.** No painel da Cloudflare, em Zero Trust → Access → Applications, crie uma aplicação para o domínio do Worker liberando só os e-mails da equipe (gratuito até 50 pessoas). Deixe o caminho `/webhook/whatsapp` fora da regra, porque quem chama é a Meta.
+**Proteja o painel antes de usar com dados reais.** A forma mais simples e sem custo é uma senha: no painel da Cloudflare, abra o Worker → Configurações → Variáveis e segredos → Adicionar, escolha o tipo **Segredo**, nome `PAINEL_SENHA`, e digite a senha da equipe. O navegador passa a pedir usuário e senha (o usuário pode ser qualquer um). Sem esse segredo, o painel fica aberto. O caminho `/webhook/whatsapp` não pede senha, porque quem chama é a Meta, e ele se protege pela assinatura.
+
+Para login por e-mail de cada pessoa, use o Cloudflare Access (Zero Trust → Access → Applications). É gratuito até 50 pessoas, mas a Cloudflare pede um cartão cadastrado.
 
 Para o webhook da Cloud API, configure os segredos:
 
