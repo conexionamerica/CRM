@@ -8,7 +8,14 @@ export default {
   async fetch(request, env) {
     const url = new URL(request.url);
     try {
+      // A Meta chama o webhook sem senha; ele se protege pela assinatura (WHATSAPP_APP_SECRET)
       if (url.pathname === '/webhook/whatsapp') return await whatsappWebhook(request, env, url);
+      if (!authorized(request, env)) {
+        return new Response('Acesso restrito à equipe da Conexión América', {
+          status: 401,
+          headers: { 'www-authenticate': 'Basic realm="CRM Conexion America", charset="UTF-8"' },
+        });
+      }
       if (url.pathname.startsWith('/api/')) return await api(request, env, url);
       return env.ASSETS.fetch(request);
     } catch (err) {
@@ -23,6 +30,20 @@ export default {
     await markNoShows(env, new Date());
   },
 };
+
+// Login simples por senha (HTTP Basic), alternativa sem custo ao Cloudflare Access.
+// Sem o segredo PAINEL_SENHA configurado, o painel fica aberto (útil em desenvolvimento).
+function authorized(request, env) {
+  if (!env.PAINEL_SENHA) return true;
+  const header = request.headers.get('authorization') || '';
+  if (!header.startsWith('Basic ')) return false;
+  let decoded;
+  try { decoded = atob(header.slice(6)); } catch { return false; }
+  const password = decoded.slice(decoded.indexOf(':') + 1); // o usuário pode ser qualquer um
+  const a = new TextEncoder().encode(password);
+  const b = new TextEncoder().encode(env.PAINEL_SENHA);
+  return a.byteLength === b.byteLength && crypto.subtle.timingSafeEqual(a, b);
+}
 
 class HttpError extends Error {
   constructor(status, message) { super(message); this.status = status; }
